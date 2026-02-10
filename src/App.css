@@ -1,0 +1,111 @@
+/* App specific styles */
+.App {
+  text-align: center;
+}
+
+/* Responsive design utilities */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .mobile-full-width {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* Test-specific styles */
+.question-container {
+  @apply mb-6 p-6 bg-white rounded-lg border border-gray-200;
+}
+
+.option-radio {
+  @apply flex items-center p-3 border border-gray-200 rounded-lg mb-2 cursor-pointer hover:bg-gray-50;
+}
+
+.option-radio.selected {
+  @apply border-blue-500 bg-blue-50;
+}
+
+.option-radio input[type="radio"] {
+  @apply h-4 w-4 text-blue-600 focus:ring-blue-500;
+}
+
+.test-section {
+  @apply p-4 border-b border-gray-200;
+}
+
+/* Animation utilities */
+.slide-in-right {
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Chart container styles */
+.chart-container {
+  @apply p-4 bg-white rounded-lg shadow;
+  height: 300px;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+}
+
+.loading-content {
+  @apply bg-white p-6 rounded-lg flex flex-col items-center;
+}
+
+/* Form validation */
+.form-error {
+  @apply text-red-600 text-sm mt-1;
+}
+
+.form-success {
+  @apply text-green-600 text-sm mt-1;
+}
+
+/* Score display */
+.score-display {
+  @apply text-4xl font-bold text-center py-4;
+}
+
+.score-high {
+  @apply text-green-600;
+}
+
+.score-medium {
+  @apply text-yellow-600;
+}
+
+.score-low {
+  @apply text-red-600;
+}
