@@ -23,16 +23,18 @@ const UserManagement = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
+      setError('');
       const params = {};
       
       if (filters.role) params.role = filters.role;
       if (filters.search) params.search = filters.search;
 
-      const response = await userAPI.getAllUsers();
-      setUsers(response.data.users);
+      const response = await userAPI.getAllUsers(params);
+      setUsers(response.data.users || []);
     } catch (error) {
-      setError('Failed to load users');
+      setError('Failed to load users: ' + (error.message || 'Unknown error'));
       console.error('Error fetching users:', error);
+      setUsers([]); // Set empty array on error
     } finally {
       setLoading(false);
     }

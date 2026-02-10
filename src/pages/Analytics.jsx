@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { userAPI } from '../services/api';
+import { analyticsAPI, userAPI } from '../services/api';
 import { Bar, Line, Pie, Radar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -42,30 +42,42 @@ const Analytics = () => {
   const fetchAnalyticsData = async () => {
     try {
       setLoading(true);
-      // In a real application, this would fetch analytics data based on the time range
-      // For now, we'll simulate the data
-      const mockData = {
+      setError('');
+      
+      // Fetch real analytics data from the backend
+      const [userStatsResponse, sectionPerformanceResponse, recentActivityResponse] = await Promise.all([
+        analyticsAPI.getUserStats(),
+        analyticsAPI.getSectionPerformance(),
+        analyticsAPI.getRecentActivity()
+      ]);
+
+      const userStats = userStatsResponse.data.stats;
+      const sectionPerformance = sectionPerformanceResponse.data.sectionPerformance;
+      const recentActivity = recentActivityResponse.data;
+
+      // Transform data for charts
+      const transformedData = {
         overallStats: {
-          totalTests: 120,
-          totalAttempts: 342,
-          avgScore: 72,
-          completionRate: 85
+          totalTests: recentActivity.totalTests || 0,
+          totalAttempts: userStats.totalAttempts || 0,
+          avgScore: userStats.averageScore || 0,
+          completionRate: userStats.completionRate || 0
         },
         monthlyGrowth: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+          labels: ['Last 30 Days'],
           datasets: [{
             label: 'Test Attempts',
-            data: [45, 52, 48, 78, 65, 89, 95],
+            data: [recentActivity.totalTests || 0],
             borderColor: 'rgb(59, 130, 246)',
             backgroundColor: 'rgba(59, 130, 246, 0.5)',
             tension: 0.1
           }]
         },
         sectionPerformance: {
-          labels: ['Listening', 'Reading', 'Writing', 'Speaking'],
+          labels: Object.keys(sectionPerformance || {}),
           datasets: [{
             label: 'Average Score',
-            data: [78, 75, 68, 74],
+            data: Object.values(sectionPerformance || {}).map(item => item.average || 0),
             backgroundColor: [
               'rgba(54, 162, 235, 0.8)',
               'rgba(255, 99, 132, 0.8)',
@@ -85,42 +97,37 @@ const Analytics = () => {
           labels: ['0-20%', '21-40%', '41-60%', '61-80%', '81-100%'],
           datasets: [{
             label: 'Number of Attempts',
-            data: [12, 23, 67, 145, 95],
+            data: [0, 0, 0, 0, recentActivity.totalTests || 0],
             backgroundColor: 'rgba(153, 102, 255, 0.8)',
             borderColor: 'rgba(153, 102, 255, 1)',
             borderWidth: 1
           }]
         },
         userPerformanceRadar: {
-          labels: ['Listening', 'Reading', 'Writing', 'Speaking', 'Grammar', 'Vocabulary'],
+          labels: ['Listening', 'Reading', 'Writing', 'Speaking'],
           datasets: [
             {
               label: 'Your Performance',
-              data: [85, 78, 72, 80, 75, 82],
+              data: [
+                sectionPerformance?.listening?.average || 0,
+                sectionPerformance?.reading?.average || 0,
+                sectionPerformance?.writing?.average || 0,
+                sectionPerformance?.speaking?.average || 0
+              ],
               backgroundColor: 'rgba(255, 99, 132, 0.2)',
               borderColor: 'rgba(255, 99, 132, 1)',
               pointBackgroundColor: 'rgba(255, 99, 132, 1)',
               pointBorderColor: '#fff',
               pointHoverBackgroundColor: '#fff',
               pointHoverBorderColor: 'rgba(255, 99, 132, 1)'
-            },
-            {
-              label: 'Class Average',
-              data: [75, 72, 68, 74, 70, 76],
-              backgroundColor: 'rgba(54, 162, 235, 0.2)',
-              borderColor: 'rgba(54, 162, 235, 1)',
-              pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-              pointBorderColor: '#fff',
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: 'rgba(54, 162, 235, 1)'
             }
           ]
         }
       };
       
-      setAnalyticsData(mockData);
+      setAnalyticsData(transformedData);
     } catch (error) {
-      setError('Failed to load analytics data');
+      setError('Failed to load analytics data: ' + (error.message || 'Unknown error'));
       console.error('Error fetching analytics:', error);
     } finally {
       setLoading(false);

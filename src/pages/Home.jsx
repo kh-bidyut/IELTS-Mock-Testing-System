@@ -30,7 +30,7 @@ const Home = () => {
       const response = await testAPI.getAllTests(params);
       setTests(response.data.tests);
     } catch (error) {
-      setError('Failed to load tests');
+      setError('Failed to load tests: ' + (error.message || 'Unknown error'));
       console.error('Error fetching tests:', error);
     } finally {
       setLoading(false);

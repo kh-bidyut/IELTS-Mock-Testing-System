@@ -13,6 +13,7 @@ import TestManagement from './pages/TestManagement'
 import UserManagement from './pages/UserManagement'
 import Analytics from './pages/Analytics'
 import Profile from './pages/Profile'
+import DatabaseDashboard from './pages/DatabaseDashboard'
 import NotFound from './pages/NotFound'
 import ProtectedRoute from './components/ProtectedRoute'
 import './App.css'
@@ -30,6 +31,7 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/database" element={<ProtectedRoute><DatabaseDashboard /></ProtectedRoute>} />
               <Route path="/test/:id" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
               <Route path="/result/:id" element={<ProtectedRoute><ResultPage /></ProtectedRoute>} />
               <Route path="/admin" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />

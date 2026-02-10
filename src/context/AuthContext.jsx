@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         try {
           setAuthToken(token);
-          const response = await api.get('/auth/profile');
+          const response = await api.get('/v1/auth/profile');
           setUser(response.data.user);
         } catch (error) {
           console.error('Auth initialization error:', error);
@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await api.post('/auth/login', { email, password });
+      const response = await api.post('/v1/auth/login', { email, password });
       const { token, user } = response.data;
       
       localStorage.setItem('token', token);
@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password, confirmPassword) => {
     try {
-      const response = await api.post('/auth/register', {
+      const response = await api.post('/v1/auth/register', {
         name,
         email,
         password,
@@ -83,7 +83,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (profileData) => {
     try {
-      const response = await api.put('/auth/profile', profileData);
+      const response = await api.put('/v1/auth/profile', profileData);
       setUser(response.data.user);
       return { success: true, user: response.data.user };
     } catch (error) {

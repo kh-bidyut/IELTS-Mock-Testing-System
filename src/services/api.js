@@ -63,44 +63,58 @@ api.interceptors.response.use(
 
 // Auth endpoints
 export const authAPI = {
-  login: (email, password) => api.post('/auth/login', { email, password }),
-  register: (userData) => api.post('/auth/register', userData),
-  getProfile: () => api.get('/auth/profile'),
-  updateProfile: (profileData) => api.put('/auth/profile', profileData),
+  login: (email, password) => api.post('/v1/auth/login', { email, password }),
+  register: (userData) => api.post('/v1/auth/register', userData),
+  getProfile: () => api.get('/v1/auth/profile'),
+  updateProfile: (profileData) => api.put('/v1/auth/profile', profileData),
 };
 
 // Test endpoints
 export const testAPI = {
-  getAllTests: (params) => api.get('/tests', { params }),
-  getTestById: (id) => api.get(`/tests/${id}`),
-  createTest: (testData) => api.post('/tests', testData),
-  updateTest: (id, testData) => api.patch(`/tests/${id}`, testData),
-  deleteTest: (id) => api.delete(`/tests/${id}`),
-  submitTest: (id, answers) => api.post(`/tests/${id}/submit`, { answers }),
+  getAllTests: (params) => api.get('/v1/tests', { params }),
+  getTestById: (id) => api.get(`/v1/tests/${id}`),
+  createTest: (testData) => api.post('/v1/tests', testData),
+  updateTest: (id, testData) => api.patch(`/v1/tests/${id}`, testData),
+  deleteTest: (id) => api.delete(`/v1/tests/${id}`),
+  submitTest: (id, answers) => api.post(`/v1/tests/${id}/submit`, { answers }),
 };
 
 // User endpoints
 export const userAPI = {
-  getMyAttempts: () => api.get('/users/my-attempts'),
-  getAllUsers: () => api.get('/users'),
-  getUserAttempts: (params) => api.get('/users/attempts', { params }),
-  getUserStats: () => api.get('/users/stats'),
+  // User's own data
+  getMyAttempts: () => api.get('/v1/users/my-attempts'),
+  // Admin endpoints
+  getAllUsers: (params) => api.get('/v1/users', { params }),
+  getUserAttempts: (params) => api.get('/v1/users/attempts', { params }),
+  getUserStats: () => api.get('/v1/users/stats'),
 };
 
 // Media endpoints
 export const mediaAPI = {
-  uploadFile: (formData) => api.post('/media/upload', formData, {
+  uploadFile: (formData) => api.post('/v1/media/upload', formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
-  })
+  }),
+  uploadProfilePicture: (formData) => api.post('/v1/media/profile-picture', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }),
+  deleteFile: (publicId) => api.delete(`/v1/media/${publicId}`),
 };
 
 // Analytics endpoints
 export const analyticsAPI = {
-  getAnalytics: () => api.get('/analytics'),
-  getUserAnalytics: () => api.get('/analytics/user'),
-  getTestAnalytics: () => api.get('/analytics/tests')
+  // User analytics
+  getUserStats: () => api.get('/v1/analytics/user-stats'),
+  getPerformanceTrend: (days) => api.get('/v1/analytics/performance-trend', { params: { days } }),
+  getSectionPerformance: () => api.get('/v1/analytics/section-performance'),
+  getRecentActivity: () => api.get('/v1/analytics/recent-activity'),
+  // Test analytics
+  getTestStats: (id) => api.get(`/v1/analytics/test-stats/${id}`),
+  // Platform analytics (admin only)
+  getPlatformStats: () => api.get('/v1/analytics/platform-stats'),
 };
 
 // Utility functions

@@ -22,6 +22,11 @@
   @apply mb-6 p-6 bg-white rounded-lg border border-gray-200;
 }
 
+/* Test card badge styles */
+.section-badge, .difficulty-badge {
+  @apply px-2 py-1 rounded-full text-xs font-medium;
+}
+
 .option-radio {
   @apply flex items-center p-3 border border-gray-200 rounded-lg mb-2 cursor-pointer hover:bg-gray-50;
 }
