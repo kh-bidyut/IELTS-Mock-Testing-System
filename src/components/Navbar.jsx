@@ -6,6 +6,7 @@ const Navbar = () => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -51,12 +52,53 @@ const Navbar = () => {
                 </Link>
                 
                 {isAdmin && (
-                  <Link 
-                    to="/admin" 
-                    className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                  >
-                    Admin
-                  </Link>
+                  <div className="relative">
+                    <button 
+                      className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center"
+                      onMouseEnter={() => setIsAdminDropdownOpen(true)}
+                      onMouseLeave={() => setIsAdminDropdownOpen(false)}
+                    >
+                      Admin
+                      <svg className={`ml-1 w-4 h-4 transition-transform ${isAdminDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    <div 
+                      className={`absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 transition-all duration-200 z-50 ${
+                        isAdminDropdownOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+                      }`}
+                      onMouseEnter={() => setIsAdminDropdownOpen(true)}
+                      onMouseLeave={() => setIsAdminDropdownOpen(false)}
+                    >
+                      <Link 
+                        to="/admin" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Dashboard
+                      </Link>
+                      <Link 
+                        to="/test-management" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          setIsAdminDropdownOpen(false);
+                        }}
+                      >
+                        Test Management
+                      </Link>
+                      <Link 
+                        to="/user-management" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          setIsAdminDropdownOpen(false);
+                        }}
+                      >
+                        User Management
+                      </Link>
+                    </div>
+                  </div>
                 )}
                 
                 <div className="relative group">
@@ -144,13 +186,49 @@ const Navbar = () => {
                 </Link>
                 
                 {isAdmin && (
-                  <Link 
-                    to="/admin" 
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Admin
-                  </Link>
+                  <div className="relative">
+                    <button 
+                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 w-full text-left flex justify-between items-center"
+                      onClick={() => setIsAdminDropdownOpen(!isAdminDropdownOpen)}
+                    >
+                      Admin
+                      <svg className={`w-4 h-4 ml-1 transform ${isAdminDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    <div className={`mt-2 space-y-1 ${isAdminDropdownOpen ? 'block' : 'hidden'}`}>
+                      <Link 
+                        to="/admin" 
+                        className="block px-6 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          setIsAdminDropdownOpen(false);
+                        }}
+                      >
+                        Dashboard
+                      </Link>
+                      <Link 
+                        to="/test-management" 
+                        className="block px-6 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          setIsAdminDropdownOpen(false);
+                        }}
+                      >
+                        Test Management
+                      </Link>
+                      <Link 
+                        to="/user-management" 
+                        className="block px-6 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          setIsAdminDropdownOpen(false);
+                        }}
+                      >
+                        User Management
+                      </Link>
+                    </div>
+                  </div>
                 )}
                 
                 <Link 

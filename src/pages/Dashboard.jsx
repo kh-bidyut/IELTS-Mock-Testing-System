@@ -200,15 +200,26 @@ const Dashboard = () => {
       )}
 
       {/* Recent Attempts */}
-      <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+      <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 mb-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-gray-900">Recent Test Attempts</h2>
-          <Link 
-            to="/" 
-            className="text-blue-600 hover:text-blue-700 font-medium"
-          >
-            View All Tests
-          </Link>
+          <div className="flex space-x-3">
+            <Link 
+              to="/analytics" 
+              className="text-blue-600 hover:text-blue-700 font-medium flex items-center"
+            >
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0h4a2 2 0 002-2v-8a2 2 0 00-2-2h-4a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              View Analytics
+            </Link>
+            <Link 
+              to="/" 
+              className="text-blue-600 hover:text-blue-700 font-medium"
+            >
+              Browse Tests
+            </Link>
+          </div>
         </div>
 
         {attempts.length === 0 ? (
@@ -234,6 +245,79 @@ const Dashboard = () => {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Progress Overview */}
+      {attempts.length > 1 && (
+        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 mb-8">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Progress Overview</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center p-4 bg-blue-50 rounded-lg">
+              <div className="text-2xl font-bold text-blue-700">
+                {attempts.length}
+              </div>
+              <div className="text-sm text-blue-600">Total Tests</div>
+            </div>
+            
+            <div className="text-center p-4 bg-green-50 rounded-lg">
+              <div className="text-2xl font-bold text-green-700">
+                {Math.round(attempts.reduce((sum, attempt) => sum + attempt.score, 0) / attempts.length)}%
+              </div>
+              <div className="text-sm text-green-600">Overall Average</div>
+            </div>
+            
+            <div className="text-center p-4 bg-purple-50 rounded-lg">
+              <div className="text-2xl font-bold text-purple-700">
+                {attempts.length > 1 
+                  ? Math.max(...attempts.map(a => a.score)) - Math.min(...attempts.map(a => a.score))
+                  : 0}%
+              </div>
+              <div className="text-sm text-purple-600">Improvement</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Link 
+          to="/analytics" 
+          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl shadow-md p-6 hover:from-blue-600 hover:to-blue-700 transition-all"
+        >
+          <div className="flex items-center mb-3">
+            <svg className="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0h4a2 2 0 002-2v-8a2 2 0 00-2-2h-4a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <h3 className="text-lg font-bold">View Analytics</h3>
+          </div>
+          <p className="text-blue-100">Detailed insights into your performance</p>
+        </Link>
+
+        <Link 
+          to="/" 
+          className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl shadow-md p-6 hover:from-green-600 hover:to-green-700 transition-all"
+        >
+          <div className="flex items-center mb-3">
+            <svg className="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 className="text-lg font-bold">Take Test</h3>
+          </div>
+          <p className="text-green-100">Continue your IELTS preparation</p>
+        </Link>
+
+        <Link 
+          to="/profile" 
+          className="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl shadow-md p-6 hover:from-purple-600 hover:to-purple-700 transition-all"
+        >
+          <div className="flex items-center mb-3">
+            <svg className="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <h3 className="text-lg font-bold">Profile</h3>
+          </div>
+          <p className="text-purple-100">Update your profile and settings</p>
+        </Link>
       </div>
     </div>
   );

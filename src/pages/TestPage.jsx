@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { testAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
+import SpeakingTestComponent from '../components/SpeakingTestComponent';
+import WritingTestComponent from '../components/WritingTestComponent';
 
 const TestPage = () => {
   const { id } = useParams();
@@ -224,7 +226,21 @@ const TestPage = () => {
                 )}
               </div>
               
-              {question.options && question.options.length > 0 ? (
+              {question.questionType === 'speaking' ? (
+                // Speaking question
+                <SpeakingTestComponent
+                  question={question}
+                  onAnswerChange={(answer) => handleAnswerChange(index, answer)}
+                  answer={answers[index]}
+                />
+              ) : question.questionType === 'writing' ? (
+                // Writing question
+                <WritingTestComponent
+                  question={question}
+                  onAnswerChange={(answer) => handleAnswerChange(index, answer)}
+                  answer={answers[index]}
+                />
+              ) : question.options && question.options.length > 0 ? (
                 // Multiple choice question
                 <div className="space-y-2">
                   {question.options.map((option, optionIndex) => (

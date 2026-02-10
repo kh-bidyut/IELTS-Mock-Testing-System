@@ -9,6 +9,9 @@ import Dashboard from './pages/Dashboard'
 import TestPage from './pages/TestPage'
 import ResultPage from './pages/ResultPage'
 import AdminDashboard from './pages/AdminDashboard'
+import TestManagement from './pages/TestManagement'
+import UserManagement from './pages/UserManagement'
+import Analytics from './pages/Analytics'
 import Profile from './pages/Profile'
 import NotFound from './pages/NotFound'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -30,6 +33,9 @@ function App() {
               <Route path="/test/:id" element={<ProtectedRoute><TestPage /></ProtectedRoute>} />
               <Route path="/result/:id" element={<ProtectedRoute><ResultPage /></ProtectedRoute>} />
               <Route path="/admin" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/test-management" element={<ProtectedRoute adminOnly><TestManagement /></ProtectedRoute>} />
+              <Route path="/user-management" element={<ProtectedRoute adminOnly><UserManagement /></ProtectedRoute>} />
+              <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
