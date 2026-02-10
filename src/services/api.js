@@ -7,7 +7,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000,
+  timeout: 30000, // Increased timeout to 30 seconds
 });
 
 // Request interceptor to add auth token
@@ -16,6 +16,13 @@ api.interceptors.request.use(
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    // Add timestamp to prevent caching of GET requests in development
+    if (config.method === 'get') {
+      config.params = {
+        ...config.params,
+        _t: new Date().getTime()
+      };
     }
     return config;
   },
@@ -31,9 +38,26 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Token expired or invalid
       localStorage.removeItem('token');
+      sessionStorage.clear(); // Clear any session storage as well
       window.location.href = '/login';
+    } else if (error.response?.status === 403) {
+      // Forbidden access
+      console.error('Access forbidden:', error.response.data.message);
+    } else if (error.response?.status >= 500) {
+      // Server error
+      console.error('Server error:', error.response.data.message);
+    } else if (error.code === 'ECONNABORTED' || error.code === 'ERR_NETWORK') {
+      // Network error or timeout
+      console.error('Network error or timeout:', error.message);
     }
-    return Promise.reject(error);
+
+    // Return error with more detailed information
+    return Promise.reject({
+      ...error,
+      message: error.response?.data?.message || error.message || 'An error occurred',
+      status: error.response?.status,
+      data: error.response?.data
+    });
   }
 );
 
@@ -63,6 +87,22 @@ export const userAPI = {
   getUserStats: () => api.get('/users/stats'),
 };
 
+// Media endpoints
+export const mediaAPI = {
+  uploadFile: (formData) => api.post('/media/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+};
+
+// Analytics endpoints
+export const analyticsAPI = {
+  getAnalytics: () => api.get('/analytics'),
+  getUserAnalytics: () => api.get('/analytics/user'),
+  getTestAnalytics: () => api.get('/analytics/tests')
+};
+
 // Utility functions
 export const setAuthToken = (token) => {
   if (token) {
@@ -71,5 +111,7 @@ export const setAuthToken = (token) => {
     delete api.defaults.headers.common['Authorization'];
   }
 };
+
+export const getApiUrl = () => API_BASE_URL;
 
 export default api;
