@@ -319,7 +319,12 @@ const TestCreationForm = ({ onSubmit, onCancel, initialData = null }) => {
                     <option value="writing-task1">Writing Task 1</option>
                     <option value="writing-task2">Writing Task 2</option>
                     <option value="listening-mcq">Listening MCQ</option>
+                    <option value="listening-short-answer">Listening Short Answer</option>
                     <option value="reading-mcq">Reading MCQ</option>
+                    <option value="reading-true-false">Reading True/False/Not Given</option>
+                    <option value="reading-short-answer">Reading Short Answer</option>
+                    <option value="reading-gap-fill">Reading Gap Fill</option>
+                    <option value="reading-match-headings">Reading Match Headings</option>
                   </select>
                 </div>
 
@@ -423,6 +428,117 @@ const TestCreationForm = ({ onSubmit, onCancel, initialData = null }) => {
                     placeholder="Enter minimum word count"
                     min="0"
                   />
+                </div>
+              )}
+
+              {/* IELTS Listening specific fields */}
+              {question.questionType.startsWith('listening-') && (
+                <div className="mb-4">
+                  <label className="form-label">Listening Question Type</label>
+                  <select
+                    value={question.listeningQuestionType || ''}
+                    onChange={(e) => handleQuestionChange(index, 'listeningQuestionType', e.target.value)}
+                    className="form-input"
+                  >
+                    <option value="">Select Type</option>
+                    <option value="multiple-choice">Multiple Choice</option>
+                    <option value="sentence-completion">Sentence Completion</option>
+                    <option value="short-answer">Short Answer</option>
+                    <option value="form-completion">Form Completion</option>
+                    <option value="note-completion">Note Completion</option>
+                    <option value="table-completion">Table Completion</option>
+                    <option value="flow-chart-completion">Flow Chart Completion</option>
+                    <option value="summary-completion">Summary Completion</option>
+                    <option value="map-completion">Map Completion</option>
+                    <option value="diagram-label-completion">Diagram Label Completion</option>
+                  </select>
+                </div>
+              )}
+
+              {/* IELTS Reading specific fields */}
+              {question.questionType.startsWith('reading-') && (
+                <div>
+                  <div className="mb-4">
+                    <label className="form-label">Reading Question Type</label>
+                    <select
+                      value={question.readingQuestionType || ''}
+                      onChange={(e) => handleQuestionChange(index, 'readingQuestionType', e.target.value)}
+                      className="form-input"
+                    >
+                      <option value="">Select Type</option>
+                      <option value="multiple-choice">Multiple Choice</option>
+                      <option value="true-false-not-given">True/False/Not Given</option>
+                      <option value="yes-no-not-given">Yes/No/Not Given</option>
+                      <option value="matching">Matching</option>
+                      <option value="sentence-completion">Sentence Completion</option>
+                      <option value="short-answer">Short Answer</option>
+                      <option value="summary-completion">Summary Completion</option>
+                      <option value="list-selection">List Selection</option>
+                      <option value="classification">Classification</option>
+                      <option value="note-completion">Note Completion</option>
+                      <option value="table-completion">Table Completion</option>
+                      <option value="flow-chart-completion">Flow Chart Completion</option>
+                      <option value="diagram-label-completion">Diagram Label Completion</option>
+                      <option value="paragraph-headings">Paragraph Headings</option>
+                    </select>
+                  </div>
+                  
+                  {question.readingQuestionType === 'true-false-not-given' || question.readingQuestionType === 'yes-no-not-given' ? (
+                    <div className="mb-4">
+                      <label className="form-label">True/False Type</label>
+                      <select
+                        value={question.trueFalseType || ''}
+                        onChange={(e) => handleQuestionChange(index, 'trueFalseType', e.target.value)}
+                        className="form-input"
+                      >
+                        <option value="">Select Type</option>
+                        <option value="true-false-not-given">True/False/Not Given</option>
+                        <option value="yes-no-not-given">Yes/No/Not Given</option>
+                      </select>
+                    </div>
+                  ) : null}
+                  
+                  {question.readingQuestionType === 'gap-fill' || question.readingQuestionType === 'summary-completion' ? (
+                    <div className="mb-4">
+                      <label className="form-label">Gap Fill Options</label>
+                      {question.gapFillOptions && question.gapFillOptions.map((option, optIndex) => (
+                        <div key={optIndex} className="flex items-center mb-2">
+                          <input
+                            type="text"
+                            value={option}
+                            onChange={(e) => {
+                              const newOptions = [...question.gapFillOptions];
+                              newOptions[optIndex] = e.target.value;
+                              handleQuestionChange(index, 'gapFillOptions', newOptions);
+                            }}
+                            className="form-input flex-1 mr-2"
+                            placeholder={`Option ${optIndex + 1}`}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newOptions = [...question.gapFillOptions];
+                              newOptions.splice(optIndex, 1);
+                              handleQuestionChange(index, 'gapFillOptions', newOptions);
+                            }}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newOptions = question.gapFillOptions ? [...question.gapFillOptions, ''] : [''];
+                          handleQuestionChange(index, 'gapFillOptions', newOptions);
+                        }}
+                        className="text-blue-600 hover:text-blue-700 text-sm mt-1"
+                      >
+                        + Add Option
+                      </button>
+                    </div>
+                  ) : null}
                 </div>
               )}
 

@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import SpeakingTestComponent from '../components/SpeakingTestComponent';
 import WritingTestComponent from '../components/WritingTestComponent';
+import ReadingTestComponent from '../components/ReadingTestComponent';
+import ListeningTestComponent from '../components/ListeningTestComponent';
 
 const TestPage = () => {
   const { id } = useParams();
@@ -242,6 +244,22 @@ const TestPage = () => {
                   answer={answers[index]}
                   writingTask={question.questionType === 'writing-task1' ? 1 : 2}
                   writingTaskType={question.writingTaskType}
+                />
+              ) : question.questionType === 'reading-mcq' || question.questionType === 'reading-gap-fill' || question.questionType === 'reading-true-false' || question.questionType === 'reading-match-headings' || question.questionType === 'reading-short-answer' ? (
+                // Reading questions with IELTS question types
+                <ReadingTestComponent
+                  question={question}
+                  onAnswerChange={(answer) => handleAnswerChange(index, answer)}
+                  answer={answers[index]}
+                  passage={test.passages?.find(p => p._id === question.passageId)}
+                />
+              ) : question.questionType === 'listening-mcq' ? (
+                // Listening questions with audio playback
+                <ListeningTestComponent
+                  question={question}
+                  onAnswerChange={(answer) => handleAnswerChange(index, answer)}
+                  answer={answers[index]}
+                  audioUrl={question.media}
                 />
               ) : question.options && question.options.length > 0 ? (
                 // Multiple choice question
