@@ -7,6 +7,8 @@ const TestCreationForm = ({ onSubmit, onCancel, initialData = null }) => {
     section: initialData?.section || 'Listening',
     difficulty: initialData?.difficulty || 'Beginner',
     timeLimit: initialData?.timeLimit || 60,
+    ieltsTestType: initialData?.ieltsTestType || 'Academic',
+    writingTask: initialData?.writingTask || null,
     questions: initialData?.questions || [
       {
         questionText: '',
@@ -14,7 +16,10 @@ const TestCreationForm = ({ onSubmit, onCancel, initialData = null }) => {
         correctAnswer: '',
         media: '',
         mediaType: 'none',
-        questionType: 'mcq'
+        questionType: 'mcq',
+        speakingPart: null,
+        writingTaskType: null,
+        minWordCount: null
       }
     ]
   });
@@ -58,7 +63,10 @@ const TestCreationForm = ({ onSubmit, onCancel, initialData = null }) => {
           correctAnswer: '',
           media: '',
           mediaType: 'none',
-          questionType: 'mcq'
+          questionType: 'mcq',
+          speakingPart: null,
+          writingTaskType: null,
+          minWordCount: null
         }
       ]
     }));
@@ -228,6 +236,33 @@ const TestCreationForm = ({ onSubmit, onCancel, initialData = null }) => {
               />
               {errors.timeLimit && <p className="form-error">{errors.timeLimit}</p>}
             </div>
+
+            <div>
+              <label className="form-label">IELTS Test Type</label>
+              <select
+                value={formData.ieltsTestType}
+                onChange={(e) => handleInputChange('ieltsTestType', e.target.value)}
+                className="form-input"
+              >
+                <option value="Academic">Academic</option>
+                <option value="General Training">General Training</option>
+              </select>
+            </div>
+
+            {formData.section === 'Writing' && (
+              <div>
+                <label className="form-label">Writing Task</label>
+                <select
+                  value={formData.writingTask || ''}
+                  onChange={(e) => handleInputChange('writingTask', e.target.value ? parseInt(e.target.value) : null)}
+                  className="form-input"
+                >
+                  <option value="">Full Writing Section</option>
+                  <option value="1">Task 1 Only</option>
+                  <option value="2">Task 2 Only</option>
+                </select>
+              </div>
+            )}
           </div>
 
           <div className="mt-4">
@@ -280,6 +315,11 @@ const TestCreationForm = ({ onSubmit, onCancel, initialData = null }) => {
                   >
                     <option value="mcq">Multiple Choice</option>
                     <option value="text">Text Input</option>
+                    <option value="speaking">Speaking Test</option>
+                    <option value="writing-task1">Writing Task 1</option>
+                    <option value="writing-task2">Writing Task 2</option>
+                    <option value="listening-mcq">Listening MCQ</option>
+                    <option value="reading-mcq">Reading MCQ</option>
                   </select>
                 </div>
 
@@ -323,6 +363,65 @@ const TestCreationForm = ({ onSubmit, onCancel, initialData = null }) => {
                     onChange={(e) => handleQuestionChange(index, 'media', e.target.value)}
                     className="form-input"
                     placeholder="Enter media URL"
+                  />
+                </div>
+              )}
+
+              {/* IELTS Speaking specific fields */}
+              {question.questionType === 'speaking' && (
+                <div className="mb-4">
+                  <label className="form-label">Speaking Part</label>
+                  <select
+                    value={question.speakingPart || ''}
+                    onChange={(e) => handleQuestionChange(index, 'speakingPart', e.target.value ? parseInt(e.target.value) : null)}
+                    className="form-input"
+                  >
+                    <option value="">Select Part</option>
+                    <option value="1">Part 1: Introduction & Interview</option>
+                    <option value="2">Part 2: Individual Long Turn</option>
+                    <option value="3">Part 3: Two-way Discussion</option>
+                  </select>
+                </div>
+              )}
+
+              {/* IELTS Writing specific fields */}
+              {(question.questionType === 'writing-task1' || question.questionType === 'writing-task2') && (
+                <div className="mb-4">
+                  <label className="form-label">Writing Task Type</label>
+                  <select
+                    value={question.writingTaskType || ''}
+                    onChange={(e) => handleQuestionChange(index, 'writingTaskType', e.target.value)}
+                    className="form-input"
+                  >
+                    <option value="">Select Task Type</option>
+                    {question.questionType === 'writing-task1' && formData.ieltsTestType === 'Academic' && (
+                      <>
+                        <option value="academic-graph">Academic: Graph/Chart</option>
+                        <option value="academic-process">Academic: Process</option>
+                        <option value="academic-map">Academic: Map</option>
+                      </>
+                    )}
+                    {question.questionType === 'writing-task1' && formData.ieltsTestType === 'General Training' && (
+                      <option value="general-letter">General Training: Letter</option>
+                    )}
+                    {question.questionType === 'writing-task2' && (
+                      <option value="essay">Essay</option>
+                    )}
+                  </select>
+                </div>
+              )}
+
+              {/* Word count requirement */}
+              {(question.questionType === 'writing-task1' || question.questionType === 'writing-task2' || question.questionType === 'text') && (
+                <div className="mb-4">
+                  <label className="form-label">Minimum Word Count</label>
+                  <input
+                    type="number"
+                    value={question.minWordCount || ''}
+                    onChange={(e) => handleQuestionChange(index, 'minWordCount', e.target.value ? parseInt(e.target.value) : null)}
+                    className="form-input"
+                    placeholder="Enter minimum word count"
+                    min="0"
                   />
                 </div>
               )}

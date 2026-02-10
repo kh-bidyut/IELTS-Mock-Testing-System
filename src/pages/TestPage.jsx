@@ -227,18 +227,21 @@ const TestPage = () => {
               </div>
               
               {question.questionType === 'speaking' ? (
-                // Speaking question
+                // Speaking question with IELTS parts
                 <SpeakingTestComponent
                   question={question}
                   onAnswerChange={(answer) => handleAnswerChange(index, answer)}
                   answer={answers[index]}
+                  speakingPart={question.speakingPart}
                 />
-              ) : question.questionType === 'writing' ? (
-                // Writing question
+              ) : question.questionType === 'writing-task1' || question.questionType === 'writing-task2' ? (
+                // Writing questions with IELTS task types
                 <WritingTestComponent
                   question={question}
                   onAnswerChange={(answer) => handleAnswerChange(index, answer)}
                   answer={answers[index]}
+                  writingTask={question.questionType === 'writing-task1' ? 1 : 2}
+                  writingTaskType={question.writingTaskType}
                 />
               ) : question.options && question.options.length > 0 ? (
                 // Multiple choice question
