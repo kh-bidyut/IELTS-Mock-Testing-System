@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import api from '../services/api';
+import api, { setAuthToken } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
     const initializeAuth = async () => {
       if (token) {
         try {
-          api.setAuthToken(token);
+          setAuthToken(token);
           const response = await api.get('/auth/profile');
           setUser(response.data.user);
         } catch (error) {
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', token);
       setToken(token);
       setUser(user);
-      api.setAuthToken(token);
+      setAuthToken(token);
       
       return { success: true, user };
     } catch (error) {
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', token);
       setToken(token);
       setUser(user);
-      api.setAuthToken(token);
+      setAuthToken(token);
       
       return { success: true, user };
     } catch (error) {
@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
-    api.setAuthToken(null);
+    setAuthToken(null);
   };
 
   const updateProfile = async (profileData) => {

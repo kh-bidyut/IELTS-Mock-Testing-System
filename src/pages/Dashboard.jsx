@@ -6,7 +6,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import TestAttemptCard from '../components/TestAttemptCard';
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [attempts, setAttempts] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -19,13 +19,14 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const [attemptsResponse, statsResponse] = await Promise.all([
-        userAPI.getMyAttempts(),
-        userAPI.getUserStats()
-      ]);
-      
+      const attemptsResponse = await userAPI.getMyAttempts();
       setAttempts(attemptsResponse.data.attempts);
-      setStats(statsResponse.data.stats);
+      
+      // Only fetch admin stats if user is admin
+      if (isAdmin) {
+        const statsResponse = await userAPI.getUserStats();
+        setStats(statsResponse.data.stats);
+      }
     } catch (error) {
       setError('Failed to load dashboard data');
       console.error('Error fetching dashboard data:', error);
